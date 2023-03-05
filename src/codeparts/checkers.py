@@ -1,6 +1,7 @@
 import os
 import requests
 import pandas
+import json
 
 from codeparts.data import Constants
 
@@ -12,6 +13,54 @@ class checkers():
         path = os.getcwd()
         self.parentpath = os.path.abspath(os.path.join(path, os.pardir))
 
+    def nightshop_en(self, account):
+        region = account.region
+        if region.lower() == 'latam' or region.lower() == 'br':
+            region = 'na'
+        try:
+            headers = {
+                "X-Riot-Entitlements-JWT": account.entt,
+                "Authorization": f"Bearer {account.token}"
+            }
+
+            # get store using api
+            r = sess.get(
+                f"https://pd.{region}.a.pvp.net/store/v2/storefront/{account.puuid}",
+                headers=headers)
+
+            BonusStoreOffers = r.json()["BonusStore"]["BonusStoreOffers"]
+            NightShopX = ''
+            skins = []
+            COST = []
+            for i in BonusStoreOffers:
+                # cost = i["DiscountCosts"]
+                # for key, value in cost.items():
+                #     COST.append(value)
+                #     break
+
+                skins.append(i["Offer"]["OfferID"])
+
+            with open(f'{self.parentpath}\\src\\assets\\skins.json', 'r', encoding='utf-8') as f:
+                response = json.load(f)
+
+            for i in response["data"]:
+                for skin in skins:
+                    skinId = skin.lower()
+                    if skinId == i["uuid"]:
+                        NightShopX += i["displayName"] + "\n"
+                    else:
+                        for j in i["chromas"]:
+                            if skinId == j["uuid"]:
+                                NightShopX += j["displayName"] + "\n"
+                        for j in i["levels"]:
+                            if skinId == j["uuid"]:
+                                NightShopX += j["displayName"] + "\n"
+
+            account.NightShop = NightShopX
+
+        except Exception as e:
+            account.NightShop = 'err'
+        
     def skins_en(self, account) -> None:
         # riot api counts latam and br as NA so u have to do this shit
         region = account.region
