@@ -253,7 +253,10 @@ class simplechecker():
                                     self.ranks[account.rank.strip().lower().split(' ')[0]] += 1
                                 except:
                                     self.ranks['unknown'] += 1
+                                    
                             check.skins_en(account)
+                            check.nightshop_en(account)
+                            
                             # get inv price
                             invprice = 0
                             for skin in account.skins.split('\n'):
@@ -288,7 +291,9 @@ class simplechecker():
                             account.skins = 'N/A\n'
                             account.region = 'N/A'
                         break
+                        
                     skinsformatted = '\n'.join(account.skins.split('\n'))
+                    # NightShopSkinFormatted = '\n'.join(account.NightShop.split('\n'))
                     banuntil = account.banuntil
                     unverifmail = account.unverifiedmail
                     lvl = account.lvl
@@ -436,6 +441,8 @@ class simplechecker():
                                 name=f'VP / RP', value=f'{vp} / {rp}')
                             embed.add_embed_field(name=f'Skins ({skinscount}) ≈ {invprice} VP', value=account.skins if account.skins.strip(
                             ) != '' else 'no skins')
+                            embed.add_embed_field(name=f'NightShop', value=account.NightShop if account.NightShop.strip(
+                            ) != '' else 'N/A')
                             dcwebhook.add_embed(embed)
                             response = dcwebhook.execute()
                             # input(response)
