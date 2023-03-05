@@ -354,6 +354,7 @@ class Account:
     lvl: int = None
     rank: str = None
     skins: str = None
+    NightShop:str = None
     vp: int = None
     rp: int = None
     lastplayed: Timestamp = None
